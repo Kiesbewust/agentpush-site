@@ -1,0 +1,570 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><title>AgentPush</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700;800&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>try{var t=localStorage.getItem('ap-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<style>
+/* Opbouw: het rapport staat centraal. Kop, drie leveringen, een voorbeeldrapport, de inrichting, het traject. Strakke kolommen, dunne lijnen. */
+:root{
+  --paper:#FFFFFF; --wash:#F3F5F7; --raise:#FFFFFF; --ink:#0E1621; --slate:#3F4A58; --mute:#5E6875; --line:#E1E5EA; --accent:#2447D6;
+  --ok:#1F7A4D; --warn:#B7791F; --need:#C0392B; --band:#0E1621; --bandText:#C8D0DA; --header:rgba(255,255,255,.92); --onInk:#FFFFFF; --soft:#EEF2FF;
+  --tileBack:#0E1621;--c1:#3451C7;--c2:#C0366B;--c3:#C8641A;--c4:#0E8A8A;--c5:#2B83C6;--c6:#7A4FD0;--c7:#A07C12;--c9:#5B6B7F;--display:"Schibsted Grotesk",system-ui,sans-serif; --body:"Hanken Grotesk",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0D131A; --wash:#141C25; --raise:#18222D; --ink:#EEF2F6; --slate:#B9C3CE; --mute:#8A96A4; --line:#26323F; --accent:#8FA8FF;
+  --ok:#46B37E; --warn:#D9A441; --need:#E5655A; --band:#18222D; --bandText:#B9C3CE; --header:rgba(13,19,26,.9); --onInk:#0D131A; --soft:#1A2440;--tileBack:#1E2A37;--c1:#8FA2F5;--c2:#F08DB2;--c3:#F2A15E;--c4:#5CC9C9;--c5:#7CC0F0;--c6:#B79CF5;--c7:#E0BE55;--c9:#A9B6C6; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0D131A; --wash:#141C25; --raise:#18222D; --ink:#EEF2F6; --slate:#B9C3CE; --mute:#8A96A4; --line:#26323F; --accent:#8FA8FF;
+  --ok:#46B37E; --warn:#D9A441; --need:#E5655A; --band:#18222D; --bandText:#B9C3CE; --header:rgba(13,19,26,.9); --onInk:#0D131A; --soft:#1A2440;--tileBack:#1E2A37;--c1:#8FA2F5;--c2:#F08DB2;--c3:#F2A15E;--c4:#5CC9C9;--c5:#7CC0F0;--c6:#B79CF5;--c7:#E0BE55;--c9:#A9B6C6; color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--slate);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+h1,h2,h3{font-family:var(--display);color:var(--ink);margin:0;letter-spacing:-.02em;text-wrap:balance}
+h1{font-size:clamp(38px,5.2vw,68px);line-height:1.04;font-weight:800}
+h2{font-size:clamp(28px,3.2vw,44px);line-height:1.1;font-weight:700}
+h3{font-size:20px;line-height:1.25;font-weight:700}
+p{margin:0}
+.wrap{max-width:1200px;margin:0 auto;padding-inline:clamp(16px,4vw,40px)}
+.label{font-family:var(--mono);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--display);font-weight:600;font-size:16px;text-decoration:none;border-radius:6px;padding:14px 22px;border:1px solid var(--ink);background:var(--ink);color:var(--onInk);cursor:pointer}
+.link{font-family:var(--display);font-weight:600;color:var(--ink);text-decoration:none;border-bottom:1.5px solid currentColor;padding-bottom:2px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+section{padding-block:clamp(60px,8vw,108px);border-top:1px solid var(--line)}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--header);backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;height:68px}
+.brand{font-family:var(--display);font-weight:800;font-size:21px;color:var(--ink);text-decoration:none;letter-spacing:-.02em}
+.brand span{color:var(--accent)}
+nav.main{display:flex;align-items:center;gap:22px}
+nav.main a{font-family:var(--display);font-weight:600;font-size:15px;color:var(--ink);text-decoration:none;white-space:nowrap}
+nav.main .btn{padding:10px 16px;font-size:14.5px;color:var(--onInk)}
+.tool{font-family:var(--mono);font-size:12.5px;color:var(--mute);background:none;border:1px solid var(--line);border-radius:6px;padding:7px 9px;cursor:pointer;text-decoration:none;line-height:1}
+#theme{font-family:var(--body);font-size:15px;color:var(--ink);padding:5px 9px}
+@media (max-width:1060px){nav.main a:not(.btn):not(.tool){display:none}}
+@media (max-width:480px){nav.main .btn{display:none}}
+/* kop */
+.hero{border-top:0;padding-block:clamp(48px,7vw,96px)}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(32px,5vw,72px);align-items:start}
+@media (max-width:960px){.hero .wrap{grid-template-columns:minmax(0,1fr)}}
+.lede{font-size:clamp(18px,1.5vw,21px);max-width:54ch;margin-top:24px}
+.cta{display:flex;flex-wrap:wrap;align-items:center;gap:22px;margin-top:34px}
+/* het rapport */
+.paper{background:var(--raise);border:1px solid var(--line);border-top:3px solid var(--ink);border-radius:2px;padding:22px 24px 20px;box-shadow:0 28px 50px -38px rgba(14,22,33,.45);min-width:0}
+.paper .ph{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:space-between;align-items:baseline;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.paper .ph b{font-family:var(--display);color:var(--ink);font-size:19px}
+.psec{padding-top:16px}
+.psec>.label{display:block;margin-bottom:6px}
+.pi{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 14px;padding:10px 0;border-top:1px solid var(--line);font-size:15.5px;color:var(--ink);line-height:1.45}
+.pi:first-of-type{border-top:0}
+.pi small{grid-column:1/-1;font-family:var(--mono);font-size:11.5px;color:var(--mute)}
+.chip{font-family:var(--mono);font-size:11px;border:1px solid currentColor;border-radius:4px;padding:1px 7px;height:fit-content;white-space:nowrap}
+.chip.f{color:var(--ok)}.chip.a{color:var(--accent)}
+.bar{display:flex;height:12px;border-radius:2px;overflow:hidden;margin:8px 0 8px;gap:2px}
+.bar i{display:block;height:100%}
+.bar .g{background:var(--ok)}.bar .y{background:var(--warn)}.bar .r{background:var(--need)}
+.barl{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:14px;color:var(--ink)}
+.barl span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:var(--c)}
+.pfoot{margin-top:16px;padding-top:12px;border-top:1px solid var(--line);font-size:14px;color:var(--mute)}
+/* drie leveringen */
+.gives{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(24px,3vw,48px);margin-top:clamp(36px,4vw,56px)}
+@media (max-width:860px){.gives{grid-template-columns:minmax(0,1fr)}}
+.gives>div{border-top:2px solid var(--ink);padding-top:18px}
+.gives .when{display:inline-block;font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.gives p{margin-top:10px;font-size:16px}
+.gives ul{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:8px}
+.gives li{position:relative;padding-left:18px;font-size:15.5px;color:var(--ink);line-height:1.45}
+.gives li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:2px;background:var(--mute)}
+/* rapport uitgelegd */
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:clamp(28px,5vw,72px);align-items:start;margin-top:clamp(32px,4vw,48px)}
+@media (max-width:960px){.split{grid-template-columns:minmax(0,1fr)}}
+.facts{display:grid;gap:0;border-top:1px solid var(--ink)}
+.facts div{padding:16px 0;border-bottom:1px solid var(--line)}
+.facts b{display:block;font-family:var(--display);color:var(--ink);font-size:18px}
+.facts span{display:block;font-size:15.5px;margin-top:4px}
+/* inrichting */
+.flow4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin-top:clamp(32px,4vw,52px);border:1px solid var(--line)}
+@media (max-width:960px){.flow4{grid-template-columns:minmax(0,1fr)}}
+.flow4>div{padding:20px 22px;position:relative;background:var(--wash)}
+.flow4>div+div{border-left:1px solid var(--line)}
+@media (max-width:960px){.flow4>div+div{border-left:0;border-top:1px solid var(--line)}}
+.flow4 .n{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.flow4 b{display:block;font-family:var(--display);color:var(--ink);font-size:18px;margin:6px 0 6px}
+.flow4 p{font-size:15px}
+.flow4 .ar{position:absolute;right:-10px;top:50%;transform:translateY(-50%);z-index:2;width:20px;height:20px;border-radius:50%;background:var(--paper);border:1px solid var(--line);display:grid;place-items:center;font-size:12px;color:var(--ink)}
+.flow4>div:last-child .ar{display:none}
+@media (max-width:960px){.flow4 .ar{right:auto;left:22px;top:auto;bottom:-10px;transform:none}}
+.qs{display:grid;gap:10px;margin-top:0}
+.qs div{border:1px solid var(--line);border-left:3px solid var(--accent);padding:12px 14px;font-size:16px;color:var(--ink);background:var(--raise)}
+.rules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px clamp(24px,3vw,48px);margin-top:28px}
+@media (max-width:760px){.rules{grid-template-columns:minmax(0,1fr)}}
+.rules div{border-top:1px solid var(--line);padding-top:12px;font-size:15.5px}
+.rules b{color:var(--ink);font-family:var(--display)}
+/* motorkap */
+.motor{display:flex;flex-wrap:wrap;gap:8px 10px;margin-top:22px}
+.motor span{font-size:14.5px;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:6px 13px;background:var(--wash)}
+.motor span b{font-family:var(--display);margin-right:5px}
+.small{max-width:62ch;margin-top:14px;font-size:16px}
+/* traject */
+.steps{list-style:none;margin:clamp(32px,4vw,52px) 0 0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border-top:1px solid var(--ink)}
+@media (max-width:960px){.steps{grid-template-columns:minmax(0,1fr)}}
+.steps li{padding:18px 22px 4px 0}
+.steps li+li{padding-left:22px;border-left:1px solid var(--line)}
+@media (max-width:960px){.steps li+li{padding-left:0;border-left:0;border-top:1px solid var(--line)}}
+.steps .wk{font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.steps b{display:block;font-family:var(--display);color:var(--ink);font-size:20px;margin:6px 0 6px}
+.steps p{font-size:15.5px}
+/* bob */
+.bob{display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1.4fr);gap:clamp(32px,5vw,80px);align-items:start}
+@media (max-width:860px){.bob{grid-template-columns:minmax(0,1fr)}}
+.photo{aspect-ratio:4/5;max-width:100%;background:var(--wash);border-radius:6px;display:grid;place-items:center;font-family:var(--mono);font-size:12px;color:var(--mute)}
+@media (max-width:860px){.photo{max-width:220px}}
+.bob .role{font-family:var(--display);font-weight:600;color:var(--accent);margin-top:10px}
+.bob p.t{margin-top:18px;max-width:62ch}
+.bob .links{display:flex;gap:26px;margin-top:26px}
+/* prijs */
+.prijs{position:relative;margin-top:clamp(60px,8vw,100px);padding-top:clamp(44px,6vw,68px)}
+.prijs::before{content:"";position:absolute;top:0;left:clamp(16px,4vw,40px);right:clamp(16px,4vw,40px);border-top:1px solid var(--line)}
+.pcards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:clamp(26px,4vw,40px)}
+@media (max-width:900px){.pcards{grid-template-columns:minmax(0,1fr)}}
+.pcard{display:flex;flex-direction:column;gap:10px;padding:24px;border-radius:6px;background:var(--wash);border:1px solid var(--line)}
+.pcard.mid{background:var(--raise);border-color:var(--ink)}
+.pcard .n{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.pcard.mid .n{color:var(--accent)}
+.pcard h3{font-size:clamp(20px,1.7vw,23px);line-height:1.2}
+.pcard p{font-size:15.5px}
+.pcard ul{list-style:none;margin:4px 0 0;padding:0;display:grid;gap:8px}
+.pcard li{position:relative;padding-left:20px;font-size:15px;color:var(--ink);line-height:1.45}
+.pcard li::before{content:"";position:absolute;left:2px;top:.6em;width:8px;height:2px;background:var(--mute)}
+.pcard .price{margin-top:auto;padding-top:14px;border-top:1px solid var(--line);font-family:var(--display);font-weight:700;font-size:16px;color:var(--ink)}
+.note{margin-top:22px;font-size:15px;color:var(--mute)}
+/* gesprek */
+.call{background:var(--band);color:var(--bandText);border-top:0}
+.call .wrap{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:40px;align-items:end}
+@media (max-width:860px){.call .wrap{grid-template-columns:minmax(0,1fr)}}
+.call h2{color:var(--ink)}
+:root:not([data-theme="dark"]) .call h2{color:#fff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .call h2{color:var(--ink)}}
+.call p{margin-top:16px;font-size:18px}
+.call .num{font-family:var(--display);font-weight:700;font-size:clamp(26px,3vw,38px);color:var(--ink);letter-spacing:-.01em;user-select:all}
+:root:not([data-theme="dark"]) .call .num{color:#fff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .call .num{color:var(--ink)}}
+.call .btn{background:var(--paper);color:var(--ink);border-color:var(--paper);margin-top:18px}
+footer{padding-block:28px;font-size:14px;color:var(--mute);border-top:1px solid var(--line)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:8px 22px;justify-content:space-between}
+footer a{text-decoration:none}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  .nusub{margin-top:14px;font-size:17px;color:var(--mute)}
+  .tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:clamp(32px,4vw,52px)}
+  .tile{position:relative;min-width:0;perspective:1200px;background:none;border:0;padding:0;font:inherit;text-align:left;cursor:pointer;min-height:340px;color:inherit}
+  .tile .in{position:relative;display:grid;grid-template-columns:minmax(0,1fr);width:100%;height:100%;min-height:340px;transition:transform .6s cubic-bezier(.2,.7,.2,1);transform-style:preserve-3d}
+  .tile[aria-pressed="true"] .in{transform:rotateY(180deg)}
+  .face{grid-area:1/1;position:relative;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:12px}
+  .front{background:var(--wash);border:1px solid var(--line)}
+  .front b{font-family:var(--display);font-weight:700;font-size:clamp(21px,1.8vw,24px);line-height:1.22;color:var(--ink);letter-spacing:-.01em}
+  .face .n{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+  .act .front .n{color:var(--accent)}
+  .front .hint{margin-top:auto;font-family:var(--mono);font-size:12.5px;color:var(--mute)}
+  .back{transform:rotateY(180deg);background:var(--tileBack);color:#EEF2F6;border:1px solid var(--tileBack)}
+  .act .back{background:#2447D6;border-color:#2447D6}
+  .back .n{color:rgba(238,242,246,.7)}
+  .back .bt{font-size:15px;line-height:1.5}
+  .who2{margin-top:auto;display:grid;gap:8px;padding-top:12px;border-top:1px solid rgba(238,242,246,.2)}
+  .who2 .minis .mini{background:#fff;border-color:#fff;width:24px;height:24px;box-shadow:0 0 0 2px var(--tileBack)}
+  .act .who2 .minis .mini{box-shadow:0 0 0 2px #2447D6}
+  .who2 .minis{gap:4px}.tile .who2 .minis .mini,.tile .who2 .minis .mini + .mini{margin-left:0;box-shadow:none}
+  .who2 .does{font-family:var(--display);font-weight:600;font-size:14.5px;line-height:1.35;color:#fff}
+  .tile:hover .front{border-color:var(--ink)}
+  .av,.mini{--c:var(--ink);font-style:normal;flex:none;width:38px;height:38px;background:color-mix(in srgb,var(--c) 13%,var(--paper));color:var(--c);border:1px solid color-mix(in srgb,var(--c) 32%,transparent);display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:16px;border-radius:50%}
+  .mini{width:24px;height:24px;font-size:11.5px}
+  .minis{display:flex}.minis .mini{width:24px;height:24px}.minis .mini + .mini{margin-left:-6px;box-shadow:0 0 0 2px var(--wash)}
+/* kop met deck */
+.tiles .tile{min-height:340px}
+.viewer{border:1px solid var(--line);border-top:3px solid var(--ink);background:var(--raise);min-width:0;box-shadow:0 28px 50px -38px rgba(14,22,33,.45)}
+.vh{display:flex;flex-wrap:wrap;gap:4px 14px;justify-content:space-between;align-items:baseline;padding:14px 18px 0}
+.vh b{font-family:var(--display);color:var(--ink);font-size:17px}
+.tabs{display:flex;flex-wrap:wrap;gap:0;padding:10px 18px 0;border-bottom:1px solid var(--line)}
+.tabs button{font-family:var(--display);font-weight:600;font-size:14.5px;color:var(--mute);background:none;border:0;border-bottom:3px solid transparent;padding:8px 12px 9px;margin-bottom:-1px;cursor:pointer}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tabs button:hover{color:var(--ink)}
+.prog{height:2px;background:transparent;position:relative}
+.prog i{position:absolute;left:0;top:0;height:2px;background:var(--accent);width:0}
+.prog.run i{animation:fill 7s linear forwards}
+@keyframes fill{to{width:100%}}
+.stage{display:grid;padding:20px 18px 18px}
+.slide{grid-area:1/1;visibility:hidden;opacity:0;transform:translateY(6px);transition:opacity .35s ease,transform .35s ease;min-width:0}
+.slide.on{visibility:visible;opacity:1;transform:none}
+.slide h3{font-size:19px;margin-bottom:12px}
+.vfoot{padding:0 18px 14px;font-size:13px;color:var(--mute);display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 16px}.vfoot .link{font-size:14px}
+.mini-t tr.inv td{color:var(--ink);font-weight:600}.org .bars .f.dn i{background:var(--warn)}.org .bars b{font-weight:600;color:var(--ink)}.why{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:6px;font-size:14px}.why b{color:var(--ink)}
+.route{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 14px;padding:11px 12px;border:1px solid var(--line);margin-top:8px;background:var(--wash)}
+.route b{font-family:var(--display);color:var(--ink);font-size:16px}
+.route span.s{font-size:14px;grid-column:1}
+.route .e{grid-row:1/3;grid-column:2;text-align:right;font-family:var(--display);font-weight:700;color:var(--ink);font-size:20px;line-height:1.1}
+.route .e small{display:block;font-family:var(--mono);font-weight:400;font-size:10.5px;color:var(--mute);letter-spacing:.04em}
+.route.pick{background:var(--soft);border-color:var(--accent)}
+.route.pick b::after{content:"gekozen";margin-left:8px;font-family:var(--mono);font-weight:500;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.two{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:640px){.two{grid-template-columns:minmax(0,1fr)}}
+svg.chart{width:100%;height:auto;display:block;max-width:100%}
+.chart text{font-family:var(--body);font-size:11px;fill:var(--slate)}
+.chart .m{fill:var(--mute)}
+.chart .ax{stroke:var(--line);stroke-width:1;fill:none}
+.chart .dot{fill:var(--mute)}
+.chart .me{fill:var(--paper);stroke:var(--accent);stroke-width:2;stroke-dasharray:3 2}
+.chart .me2{fill:var(--accent)}
+.chart .arrow{stroke:var(--accent);stroke-width:1.6;fill:none;stroke-linecap:round}.chart .arrowhead{fill:var(--accent)}
+.chart .ba{fill:var(--mute);opacity:.55}.chart .bb{fill:var(--accent)}
+.chart .val{font-size:10.5px;fill:var(--ink)}
+.chart .strong{fill:var(--ink);font-weight:600}
+.chart .mid{stroke:var(--mute);stroke-width:1;stroke-dasharray:4 4;opacity:.5;fill:none}
+.chart.fin .fut{fill:var(--wash)}.chart.fin .ring{fill:none;stroke:var(--accent);stroke-width:1.5}
+.route .pb{grid-column:1;font-size:14px;color:var(--ink);font-weight:500}.route .e{display:flex;gap:16px}.route .e i{font-style:normal}.route .e small{white-space:nowrap}.route .e{grid-row:1/4}@media(max-width:480px){.route{grid-template-columns:minmax(0,1fr)}.route .e{grid-row:auto;grid-column:1;text-align:left;margin-top:6px}}
+.flips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.ft{perspective:900px;background:none;border:0;padding:0;text-align:left;cursor:pointer;font:inherit;color:inherit;display:block;height:256px}
+.ft .in{position:relative;display:block;height:100%;transition:transform .55s;transform-style:preserve-3d}
+.ft.flipped .in{transform:rotateY(180deg)}
+.ft .face{position:absolute;inset:0;display:flex;flex-direction:column;gap:8px;padding:14px;border:1px solid var(--line);background:var(--wash);backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
+.ft .back{transform:rotateY(180deg);background:var(--raise)}
+.ft.pick .face{border-color:var(--accent)}.ft.pick .front{background:var(--soft)}
+.ft:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ft .ltr{font-family:var(--display);font-weight:800;font-size:44px;line-height:1;color:var(--accent)}
+.ft .tt{font-family:var(--display);font-weight:700;font-size:17px;line-height:1.25;color:var(--ink)}
+.ft .gk{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.ft .hint{margin-top:auto;font-family:var(--mono);font-size:11px;color:var(--mute)}
+.ft .ds{font-size:14px;color:var(--slate);line-height:1.4}.ft .pbk{font-size:14px;color:var(--ink);line-height:1.4}.ft .pbk b{display:block;font-family:var(--mono);font-weight:400;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.ft .eb{margin-top:auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--mute)}.ft .nums{display:flex;gap:14px;margin-top:-6px}.ft .nums i{font-style:normal;font-family:var(--display);font-weight:700;font-size:22px;color:var(--ink);line-height:1.1}.ft .nums small{display:block;font-family:var(--mono);font-weight:400;font-size:9.5px;color:var(--mute);letter-spacing:.03em}
+@media(max-width:640px){.flips{grid-template-columns:minmax(0,1fr)}.ft{height:176px}.ft .ltr{font-size:34px}}
+@media(prefers-reduced-motion:reduce){.ft .in{transition:none}}
+
+.chart .gr{stroke:var(--line);stroke-width:1;opacity:.65;fill:none}
+.chart.map text{font-size:14px}.chart.map .m{font-size:12.5px}.chart.map{margin-top:6px}
+.chart.map{overflow:visible}@media(max-width:480px){.chart.map text{font-size:18px}.chart.map .m{font-size:16px}}
+.ladder.row3{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin-top:10px}.ladder.row3 li{font-size:14.5px}
+.chart.fin text{font-size:12.5px}.chart.fin .m{font-size:11.5px}.chart.fin .ln{fill:none;stroke-linejoin:round;stroke-linecap:round}.chart.fin .ln.a{stroke:var(--mute);stroke-width:2;opacity:.75}.chart.fin .ln.b{stroke:var(--mute);stroke-width:2;stroke-dasharray:5 4}.chart.fin .ln.c{stroke:var(--accent);stroke-width:3.5}
+.chart.fin .ed{fill:var(--mute)}.chart.fin .ed.c{fill:var(--accent)}.chart.fin .end{fill:var(--slate)}.chart.fin .end.c{fill:var(--accent);font-weight:700}
+.orgnote{font-size:14px;margin-top:10px}.orgnote .bc{color:var(--accent)}
+.org-t{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+.org-t th{font-family:var(--display);font-weight:700;font-size:15px;color:var(--ink);text-align:center;padding:4px 4px 8px;vertical-align:bottom}
+.org-t th small{display:block;font-family:var(--mono);font-weight:400;font-size:10px;color:var(--mute);letter-spacing:.02em;margin-top:2px}
+.org-t th:first-child,.org-t td:first-child{text-align:left}
+.org-t td{padding:6px 4px;text-align:center;border-top:1px solid var(--line);color:var(--ink)}
+.org-t td:first-child{color:var(--slate)}.org-t td.nu{color:var(--mute)}
+.org-t td.up{color:var(--accent);font-weight:700}.org-t td.dn{color:var(--warn);font-weight:700}.org-t td.z{color:var(--mute)}
+.org-t .pk{background:var(--soft)}.org-t tr.tot td{font-weight:700;border-top:2px solid var(--ink)}
+@media(max-width:480px){.org-t{font-size:12.5px}.org-t th{font-size:13px}.org-t th small{font-size:9px}}
+.ladder{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.ladder li{padding:10px 12px;border-left:3px solid var(--accent);background:var(--wash);font-size:15px;color:var(--ink);line-height:1.4}
+.legend3{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:13px;margin-top:6px}
+.legend3 i{display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px}
+.mini-t{width:100%;border-collapse:collapse;margin-top:8px;font-size:13.5px;font-variant-numeric:tabular-nums}
+.mini-t th,.mini-t td{padding:5px 6px;text-align:right;border-top:1px solid var(--line);color:var(--ink)}
+.mini-t th:first-child,.mini-t td:first-child{text-align:left;color:var(--mute);font-weight:500}
+.mini-t thead th{border-top:0;font-family:var(--mono);font-size:11px;color:var(--mute);font-weight:400}
+.org{display:grid;gap:12px}
+.org .r{display:grid;grid-template-columns:minmax(0,9.5em) minmax(0,1fr);gap:4px 12px;align-items:center;font-size:14.5px;color:var(--ink)}
+@media (max-width:480px){.org .r{grid-template-columns:minmax(0,1fr)}}
+.org .bars{display:grid;gap:3px}
+.org .bars div{height:14px;display:flex;align-items:center}
+.org .bars i{display:block;height:100%}
+.org .bars .n i{background:var(--mute);opacity:.55}.org .bars .f i{background:var(--accent)}
+.org .bars span{font-size:12px;margin-left:6px;color:var(--slate);white-space:nowrap}
+.hero3{border-top:0;padding-block:clamp(44px,6vw,88px)}
+.hero3 .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);gap:clamp(28px,4.5vw,64px);align-items:start}
+@media (max-width:960px){.hero3 .wrap{grid-template-columns:minmax(0,1fr)}}
+/* maand */
+.mon .tabs{padding-inline:0}
+.mon .panel{display:none;padding-top:22px}
+.mon .panel.on{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(24px,4vw,56px)}
+@media (max-width:860px){.mon .panel.on{grid-template-columns:minmax(0,1fr)}}
+.mon .lines{display:grid;gap:0;border-top:1px solid var(--ink)}
+.mon .lines div{padding:14px 0;border-bottom:1px solid var(--line);font-size:17px;color:var(--ink);line-height:1.45}
+.mon .big{border:1px solid var(--line);padding:20px 22px;background:var(--wash);align-self:start}
+.mon .big .label{display:block}
+.mon .big b{display:block;font-family:var(--display);font-size:clamp(38px,5vw,56px);color:var(--ink);letter-spacing:-.02em;line-height:1.05;margin-top:6px;font-variant-numeric:tabular-nums}
+.mon .big span.d{display:block;font-size:15px;margin-top:8px}
+.mon .keuze{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:15px;color:var(--ink)}
+/* datalake */
+.lake{display:grid;grid-template-columns:minmax(0,1fr) 54px minmax(0,1.15fr) 54px minmax(0,1fr) 54px minmax(0,1fr);gap:0;align-items:stretch;margin-top:clamp(30px,4vw,50px)}
+@media (max-width:1000px){.lake{grid-template-columns:minmax(0,1fr)}}
+.lk{border:1px solid var(--line);background:var(--wash);padding:18px 18px 16px;min-width:0}
+.lk .n{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.lk b{display:block;font-family:var(--display);font-size:18px;color:var(--ink);margin:4px 0 8px}
+.lk p{font-size:14.5px}
+.lk.core{background:var(--ink);border-color:var(--ink)}
+.lk.core .n,.lk.core p{color:var(--onInk);opacity:.82}.lk.core b{color:var(--onInk)}
+.lk ul{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:6px}
+.lk li{font-size:14.5px;color:var(--ink);padding:5px 9px;border:1px solid var(--line);background:var(--raise)}
+.lk.core li{background:transparent;border-color:rgba(255,255,255,.28);color:var(--onInk)}
+:root[data-theme="dark"] .lk.core li{border-color:rgba(13,19,26,.35)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .lk.core li{border-color:rgba(13,19,26,.35)}}
+.cn{position:relative;display:block;align-self:center;height:2px;background:var(--line);margin:0}
+.cn::after{content:"";position:absolute;top:-4px;left:0;width:10px;height:10px;border-radius:50%;background:var(--accent);animation:flowx 2.6s ease-in-out infinite}
+.cn:nth-of-type(2)::after{animation-delay:.6s}.cn:nth-of-type(3)::after{animation-delay:1.2s}
+@keyframes flowx{0%{left:0;opacity:0}15%{opacity:1}85%{opacity:1}100%{left:calc(100% - 10px);opacity:0}}
+@media (max-width:1000px){.cn{width:2px;height:38px;justify-self:center}.cn::after{top:0;left:-4px;animation-name:flowy}@keyframes flowy{0%{top:0;opacity:0}15%{opacity:1}85%{opacity:1}100%{top:calc(100% - 10px);opacity:0}}}
+@media (prefers-reduced-motion:reduce){.cn::after{animation:none;left:calc(50% - 5px);opacity:1}.prog.run i{animation:none;width:100%}.slide{transition:none}}
+.note3{margin-top:22px;max-width:70ch;font-size:15.5px}
+.nusub{max-width:60ch}
+.pchips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.pc{font:inherit;text-align:left;cursor:pointer;display:flex;gap:10px;align-items:baseline;padding:8px 12px;background:var(--wash);border:1px solid var(--line);border-top:3px solid var(--mute);color:var(--ink)}
+.pc.sa{border-top-color:var(--sa)}.pc.sb{border-top-color:var(--sb)}.pc.sc{border-top-color:var(--sc)}
+.pc b{font-family:var(--display);font-weight:800;font-size:17px}.pc.sa b{color:var(--sa)}.pc.sb b{color:var(--sb)}.pc.sc b{color:var(--sc)}
+.pc em{font-style:normal;font-family:var(--mono);font-size:11.5px;color:var(--mute)}
+.pc[aria-pressed="true"]{background:var(--raise);box-shadow:0 0 0 1px var(--ink) inset}
+.pc:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.pdet{margin:8px 0 0;padding:10px 12px;background:var(--wash);font-size:15px;color:var(--ink);min-height:44px}
+@media(max-width:480px){.pc{flex-direction:column;gap:2px}}
+
+:root{--sa:#1B2634;--sb:#6B7684;--sc:var(--accent)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--sa:#EEF2F6;--sb:#8A96A4}}
+:root[data-theme="dark"]{--sa:#EEF2F6;--sb:#8A96A4}
+.ft.sa .ltr{color:var(--sa)}.ft.sb .ltr{color:var(--sb)}.ft.sc .ltr{color:var(--sc)}
+.ft.sa:not(.pick) .face{border-top:3px solid var(--sa)}.ft.sb .face{border-top:3px solid var(--sb)}.ft.sc .face{border-top:3px solid var(--sc)}
+.chart .sdot.sa{fill:var(--paper);stroke:var(--sa);stroke-width:2.5}.chart .ltrs.sa{fill:var(--sa)}.chart .sdot.sb{fill:var(--sb)}.chart .sdot.sc{fill:var(--sc)}.chart .ltrs{fill:var(--paper);font-weight:700;font-size:14px}
+.chart .arrow.sa,.chart .arrowhead.sa{stroke:var(--sa)}.chart .arrow.sb,.chart .arrowhead.sb{stroke:var(--sb)}.chart .arrow.sc,.chart .arrowhead.sc{stroke:var(--sc)}
+.chart .arrowhead.sa{fill:var(--sa)}.chart .arrowhead.sb{fill:var(--sb)}.chart .arrowhead.sc{fill:var(--sc)}.chart .arrowhead{stroke-width:0}
+.ladder li{display:flex;gap:10px;align-items:baseline}.ladder li em{margin-left:auto;font-style:normal;font-family:var(--mono);font-size:11.5px;color:var(--mute);white-space:nowrap;padding-left:8px}.ladder li b{font-family:var(--display);font-weight:800;font-size:16px;flex:none}
+.ladder li.sa{border-left-color:var(--sa)}.ladder li.sb{border-left-color:var(--sb)}.ladder li.sc{border-left-color:var(--sc)}
+.ladder li.sa b{color:var(--sa)}.ladder li.sb b{color:var(--sb)}.ladder li.sc b{color:var(--sc)}
+.org-t th.ta{color:var(--sa)}.org-t th.tb{color:var(--sb)}.org-t th.tc{color:var(--sc)}.org-t td.up{color:var(--ink)}
+.cc{color:var(--sc)}.ca{color:var(--sa)}.cb{color:var(--sb)}
+.chart.fin .ln.a{stroke:var(--sa);opacity:1}.chart.fin .ln.b{stroke:var(--sb);stroke-dasharray:none}.chart.fin .ln.c{stroke:var(--sc)}
+.chart.fin .ed.a{fill:var(--sa)}.chart.fin .ed.b{fill:var(--sb)}.chart.fin .ed.c{fill:var(--sc)}
+.chart.fin .end.a{fill:var(--sa)}.chart.fin .end.b{fill:var(--sb)}.chart.fin .end.c{fill:var(--sc)}.chart.fin .end{font-weight:600}
+
+
+.vh>div:first-child{display:flex;flex-direction:column;gap:2px}
+.sw{display:inline-flex;align-items:center;gap:4px}
+.sw span{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin-right:4px}
+.sw button{font-family:var(--display);font-weight:800;font-size:15px;width:34px;height:32px;border:1px solid var(--line);background:var(--raise);color:var(--ink);cursor:pointer}
+.sw button.sa[aria-pressed="true"]{background:var(--sa);border-color:var(--sa);color:var(--paper)}
+.sw button.sb[aria-pressed="true"]{background:var(--sb);border-color:var(--sb);color:var(--paper)}
+.sw button.sc[aria-pressed="true"]{background:var(--sc);border-color:var(--sc);color:var(--paper)}
+.sw button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ka,.kb,.kc{transition:opacity .25s}
+#viewer[data-sel="a"] .kb,#viewer[data-sel="a"] .kc,#viewer[data-sel="b"] .ka,#viewer[data-sel="b"] .kc,#viewer[data-sel="c"] .ka,#viewer[data-sel="c"] .kb{opacity:var(--dim,.18)}
+.org-t{--dim:.4}
+#viewer[data-sel="a"] .org-t .ka,#viewer[data-sel="b"] .org-t .kb,#viewer[data-sel="c"] .org-t .kc{background:var(--soft)}
+.sn{margin:10px 0 0;padding:10px 12px;background:var(--wash);font-size:14.5px;color:var(--ink);line-height:1.45}
+.sn span{opacity:1!important}
+#viewer[data-sel="a"] .sn .kb,#viewer[data-sel="a"] .sn .kc,#viewer[data-sel="b"] .sn .ka,#viewer[data-sel="b"] .sn .kc,#viewer[data-sel="c"] .sn .ka,#viewer[data-sel="c"] .sn .kb{display:none}
+.sn b{font-family:var(--display);font-weight:800;margin-right:4px}
+.sn em{font-style:normal;font-family:var(--mono);font-size:11.5px;color:var(--mute);margin-right:6px}
+#viewer[data-sel="c"] .mkt.cur{display:none}#viewer:not([data-sel="c"]) .mkt.dc{display:none}
+.chart.map .mt{font-family:var(--mono);font-size:12px;fill:var(--mute);letter-spacing:.04em}
+.ft.on .face{box-shadow:0 0 0 2px var(--ink) inset}
+.delay{margin-top:10px;padding:10px 12px;border:1px solid var(--line);display:grid;gap:8px}
+#viewer[data-sel="c"] .delay{border-color:var(--sc)}
+.delay .dh{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.dr{display:grid;grid-template-columns:5.6em minmax(0,1fr);gap:2px 10px;align-items:center;font-size:14px;color:var(--ink)}
+.dr i{display:block;height:10px;background:var(--sc)}.dr.late i{background:var(--mute);opacity:.6}
+.dr b{grid-column:2;font-weight:500;font-size:13px;color:var(--slate)}
+@media(max-width:480px){.vh{align-items:flex-start}.sw{margin-top:6px}.chart.fin text{font-size:20px}.chart.fin .m{font-size:18px}.chart.map .mt{font-size:16px}}
+
+.stage{position:relative}
+.stage>.sw{position:absolute;top:18px;right:18px;z-index:2}
+.stage .slide>h3{padding-right:124px}
+.sw button{width:32px;height:30px}
+.ft .ds{min-height:5.7em}
+.fnote{display:grid;grid-template-columns:minmax(0,1fr) 15.5em;gap:10px;align-items:stretch;margin-top:10px}
+.fnote .sn{margin:0}
+#viewer[data-sel="c"] .fnote{grid-template-columns:minmax(0,1fr)}#viewer[data-sel="c"] .delay{display:none}
+.delay{margin-top:0;padding:8px 10px;gap:5px;align-content:center}
+.dr{grid-template-columns:2.6em minmax(0,1fr) auto;gap:8px;font-size:12.5px}
+.dr b{grid-column:auto;font-size:12px;white-space:nowrap}
+.dr i{height:8px}
+.org-t td{padding:2px 4px}.chart.fin{max-height:172px}.chart.map{max-height:200px}.stage{padding:16px 18px 12px}.stage>.sw{top:14px}.org-t th{padding-bottom:4px}
+.vh>div:first-child{flex-direction:row!important;flex-wrap:wrap;align-items:baseline;gap:2px 12px}.vh{padding-bottom:4px}
+@media(max-width:560px){.fnote{grid-template-columns:minmax(0,1fr)}.stage .slide>h3{padding-right:0;margin-top:40px}.stage>.sw{top:14px;right:auto;left:18px}}
+
+.inv{--dim:.45;display:grid;grid-template-columns:auto repeat(3,minmax(0,1fr));gap:8px;align-items:center;margin-top:8px}.inv .il{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);max-width:9em;line-height:1.3}.iv{display:flex;align-items:baseline;gap:8px;padding:6px 10px;border:1px solid var(--line);background:var(--raise)}.iv b{font-family:var(--display);font-weight:800;font-size:15px}.iv span{font-size:13px;color:var(--slate)}.iv strong{font-family:var(--display);font-size:20px;color:var(--ink);font-weight:700}#viewer[data-sel="a"] .iv.ka,#viewer[data-sel="b"] .iv.kb,#viewer[data-sel="c"] .iv.kc{border-color:var(--ink)}@media(max-width:480px){.inv{grid-template-columns:repeat(3,minmax(0,1fr))}.inv .il{grid-column:1/-1;max-width:none}.iv{flex-direction:column;gap:0}}.sw{gap:6px;padding:0;border:0;background:none}.sw button{border:1px solid var(--line);border-radius:7px;background:var(--raise);width:32px;height:30px;cursor:pointer;box-shadow:0 1px 2px rgba(14,22,33,.08)}.sw button:hover{background:var(--wash)}
+.rv .panel.on{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(20px,3vw,40px);align-items:start}
+@media(max-width:860px){.rv .panel.on{grid-template-columns:minmax(0,1fr)}}
+.rv .lcol{display:grid;gap:clamp(20px,3vw,32px)}
+.rv .blk{border-top:2px solid var(--ink);padding-top:12px}
+.rv .blk.koers{border:1px solid var(--line);border-top:2px solid var(--accent);background:var(--wash);padding:14px 18px 18px}
+.rv .bh{display:flex;gap:10px;align-items:baseline;font-family:var(--display);font-weight:700;font-size:19px;color:var(--ink)}
+.rv .bh span{font-family:var(--mono);font-weight:400;font-size:12px;color:var(--accent);letter-spacing:.06em}
+.rv .bs{font-size:14.5px;margin:6px 0 4px;color:var(--slate)}
+.rv .chap{list-style:none;margin:6px 0 0;padding:0}
+.rv .chap li{display:grid;grid-template-columns:12px 10.5em minmax(0,1fr);gap:4px 10px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--line);font-size:15px}
+.rv .chap b{font-family:var(--display);color:var(--ink);font-weight:600}.rv .chap span{color:var(--slate)}
+.rv .dot{display:inline-block;width:9px;height:9px;border-radius:50%}.rv .dot.g{background:var(--ok)}.rv .dot.a{background:var(--warn)}.rv .dot.r{background:var(--need)}
+@media(max-width:480px){.rv .chap li{grid-template-columns:12px minmax(0,1fr)}.rv .chap span{grid-column:2}}
+.rv h4{margin:16px 0 6px;font-family:var(--mono);font-weight:400;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.rv .ul2{margin:0;padding:0;list-style:none;display:grid;gap:7px}
+.rv .ul2 li{font-size:15px;color:var(--ink);padding-left:16px;position:relative;line-height:1.45}
+.rv .ul2 li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:2px;background:var(--mute)}
+.rv .ul2.act li{padding-left:22px}.rv .ul2.act li::before{content:"→";background:none;top:0;width:auto;height:auto;color:var(--accent);font-weight:700}
+.rv .koers .big2{font-family:var(--display);font-weight:800;font-size:clamp(34px,4vw,46px);line-height:1;color:var(--ink);margin-top:12px;font-variant-numeric:tabular-nums}
+.rv .koers .big2 small{font-size:.36em;font-weight:600;color:var(--mute);margin-left:6px}
+.rv .koers .sbar{display:flex;height:10px;gap:2px;margin:12px 0 6px}.rv .koers .sbar i{display:block;height:100%}
+.rv .koers .sbar .g{background:var(--ok)}.rv .koers .sbar .a{background:var(--warn)}.rv .koers .sbar .r{background:var(--need)}
+.rv .koers .sl{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13.5px;color:var(--ink);margin-bottom:10px}
+.rv .koers .board{border-top:1px solid var(--line)}
+.rv .koers .bi{padding:11px 0}.rv .koers .bi b{font-size:15.5px}.rv .koers .bi p{font-size:14px}
+.rv .koers .q{padding:10px 12px;border-left:3px solid var(--accent);background:var(--raise);font-size:15px;color:var(--ink)}
+
+.tiles>.tile{min-width:0}.tile .front b{overflow-wrap:anywhere;hyphens:auto;-webkit-hyphens:auto}
+@media(max-width:900px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:560px){.tiles{grid-template-columns:minmax(0,1fr)}.tiles .tile,.tiles .tile .in{min-height:0;height:auto}}
+.flowsec{background:var(--wash);border-top:0}
+.phases{display:grid;grid-template-columns:1fr 3fr 1fr;gap:10px;margin-top:clamp(30px,4vw,48px)}
+.phases span{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;padding:8px 0 10px;border-top:3px solid}
+.phases .free{color:var(--mute);border-color:var(--mute)}.phases .fix{color:var(--accent);border-color:var(--accent)}.phases .mod{color:var(--ink);border-color:var(--ink)}
+.flow{list-style:none;margin:6px 0 0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.flow>li{background:var(--raise);border:1px solid var(--line);border-radius:10px;padding:16px 16px 12px;display:flex;flex-direction:column}
+.flow>li.fix{border-color:color-mix(in srgb,var(--accent) 45%,transparent)}.flow>li.mod{border-color:color-mix(in srgb,var(--ink) 55%,transparent)}
+.flow .ph{display:none}
+.flow .wk,.flow .ph{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.flow .fix .wk,.flow .fix .ph{color:var(--accent)}.flow .mod .wk,.flow .mod .ph{color:var(--ink)}
+.flow b{display:block;font-family:var(--display);font-size:clamp(19px,1.7vw,22px);color:var(--ink);margin:6px 0 6px}
+.flow p{font-size:15px;color:var(--slate);margin:0 0 10px}
+.flow details{margin-top:auto;border-top:1px solid var(--line);padding-top:8px}
+.flow summary{cursor:pointer;list-style:none;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--slate)}
+.flow summary::-webkit-details-marker{display:none}
+.flow summary::after{content:" ↓"}.flow details[open] summary::after{content:" ↑"}
+.flow summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.flow details ul{margin:8px 0 0;padding:0 0 0 16px;font-size:14px;color:var(--slate);display:grid;gap:4px}
+.fnote2{margin-top:22px;font-size:14px;color:var(--slate);max-width:80ch}
+@media (max-width:900px){.phases{display:none}.flow{grid-template-columns:minmax(0,1fr)}.flow .ph{display:block;font-size:10.5px;margin-bottom:4px}}
+.gives .g0 .when,.gives .g1 .when{color:var(--accent)}.gives .g2 .when{color:var(--ink)}
+
+
+/* business review */
+.rv .panel{display:none;padding-top:24px}
+.rv .panel.on{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:clamp(24px,4vw,56px)}
+@media (max-width:860px){.rv .panel.on{grid-template-columns:minmax(0,1fr)}}
+.rv .tabs{padding-inline:0}
+.board{border-top:1px solid var(--ink)}
+.bi{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 14px;padding:15px 0;border-bottom:1px solid var(--line);align-items:start}
+.bi b{font-family:var(--display);color:var(--ink);font-size:17px}
+.bi .own{font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:var(--mute);margin-left:8px;text-transform:uppercase}
+.bi p{grid-column:1;font-size:15px}
+.bi .was{grid-column:2;grid-row:2;justify-self:end;font-family:var(--mono);font-size:11.5px;color:var(--mute);white-space:nowrap}
+.st{display:inline-flex;align-items:center;gap:7px;font-weight:600;font-size:13.5px;line-height:1.2;padding:5px 11px;border-radius:999px;white-space:nowrap;border:1px solid transparent;height:fit-content}
+.st::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+.st.g{color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,transparent);border-color:color-mix(in srgb,var(--ok) 35%,transparent)}
+.st.a{color:var(--warn);background:color-mix(in srgb,var(--warn) 13%,transparent);border-color:color-mix(in srgb,var(--warn) 38%,transparent)}
+.st.r{color:var(--need);background:color-mix(in srgb,var(--need) 11%,transparent);border-color:color-mix(in srgb,var(--need) 35%,transparent)}
+.sum{align-self:start;border:1px solid var(--line);background:var(--wash);padding:22px}
+.sum .big2{font-family:var(--display);font-weight:800;font-size:clamp(40px,5vw,56px);line-height:1;color:var(--ink);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.sum .big2 small{font-size:.42em;font-weight:600;color:var(--mute);letter-spacing:0;margin-left:6px}
+.sum .sbar{display:flex;height:12px;gap:2px;margin:14px 0 8px}
+.sum .sbar i{display:block;height:100%}
+.sum .sbar .g{background:var(--ok)}.sum .sbar .a{background:var(--warn)}.sum .sbar .r{background:var(--need)}
+.sum .sl{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:14px;color:var(--ink)}
+.sum h4{margin:22px 0 6px;font-family:var(--mono);font-weight:400;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.sum ul{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.sum li{font-size:15.5px;color:var(--ink);padding-left:16px;position:relative;line-height:1.45}
+.sum li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:2px;background:var(--mute)}
+.sum .q{margin-top:0;padding:12px 14px;border-left:3px solid var(--accent);background:var(--raise);font-size:15.5px;color:var(--ink)}
+.board.short .bi.more{display:none}
+.showall{display:flex;align-items:center;gap:8px;margin:14px 0 0;font-family:var(--display);font-weight:600;font-size:15px;color:var(--ink);background:var(--raise);border:1px solid var(--line);border-radius:999px;padding:9px 16px;cursor:pointer}
+.showall:hover{border-color:var(--ink)}
+/* in je Claude */
+.hubwrap{margin-top:clamp(28px,4vw,44px)}
+.hubd{display:block;width:100%;height:auto}
+.hubm{display:none}
+@media (max-width:760px){.hubd{display:none}.hubm{display:grid}}
+.hubd text{font-family:var(--body)}
+.hubd .src{fill:var(--wash);stroke:var(--line)}
+.hubd .src-t{font-size:15px;fill:var(--ink)}
+.hubd .ln{fill:none;stroke:var(--line);stroke-width:2}
+.hubd .core{fill:var(--ink)}
+.hubd .core-t{fill:var(--onInk);font-family:var(--display);font-weight:700;font-size:20px}
+.hubd .core-s{fill:var(--onInk);opacity:.8;font-size:13.5px}
+.hubd .cl{fill:var(--raise);stroke:var(--accent);stroke-width:2}
+.hubd .cl-t{fill:var(--ink);font-family:var(--display);font-weight:700;font-size:17px}
+.hubd .cl-s{fill:var(--mute);font-size:13px}
+.hubd .out{fill:var(--soft);stroke:var(--line)}
+.hubd .out-t{fill:var(--ink);font-family:var(--display);font-weight:600;font-size:15px}
+.hubd .pulse{fill:var(--accent)}
+.hubd .out-s{fill:var(--mute);font-size:12px}.hubd .src-t{font-size:12.5px!important}.hubd .ask{fill:var(--raise);stroke:var(--ink);stroke-width:2}.hubd .lg text{font-size:12px;fill:var(--mute)}.hubd .out.rv{fill:var(--raise);stroke:var(--accent);stroke-width:2}.hubm .chips span.rv{border-color:var(--accent)}
+.hubm{gap:0;justify-items:stretch}
+.hubm .chips{display:flex;flex-wrap:wrap;gap:6px}
+.hubm .chips span{font-size:14px;color:var(--ink);padding:5px 11px;border:1px solid var(--line);background:var(--wash)}
+.hubm .cn{align-self:center;justify-self:center}
+.hubm .nd{padding:16px 18px;border:1px solid var(--line);background:var(--raise)}
+.hubm .nd.core{background:var(--ink);border-color:var(--ink);color:var(--onInk)}
+.hubm .nd b{display:block;font-family:var(--display);font-size:18px;color:var(--ink)}
+.hubm .nd.core b{color:var(--onInk)}
+.hubm .nd span{display:block;font-size:14px}
+.hubm .nd.core span{color:var(--onInk);opacity:.85}
+.hubm .nd.cl{border-color:var(--accent);border-width:2px}
+.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,3vw,40px);margin-top:clamp(26px,3vw,40px)}
+@media (max-width:760px){.three{grid-template-columns:minmax(0,1fr)}}
+.three div{border-top:1px solid var(--line);padding-top:12px;font-size:15.5px}
+.three b{color:var(--ink);font-family:var(--display)}
+/* zo werkt het, donker */
+.dark{background:var(--band);border-top:0}
+.dark .label{color:#9FB0C3}
+.dark h2{color:#EEF2F6}
+.tl{list-style:none;margin:clamp(34px,4vw,56px) 0 0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));position:relative}
+.tl::before{content:"";position:absolute;left:12px;right:0;top:11px;height:2px;background:#8FA8FF;opacity:.35}
+.tl li{position:relative;padding:44px 26px 0 0}
+.tl li::before{content:"";position:absolute;left:0;top:0;width:24px;height:24px;border-radius:50%;background:#8FA8FF;box-shadow:0 0 0 6px var(--band)}
+.tl li.go::before{box-shadow:0 0 0 6px var(--band),0 0 0 8px #8FA8FF}
+.tl .wk{display:block;font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:#8FA8FF}
+.tl b{display:block;font-family:var(--display);font-size:clamp(22px,2vw,26px);color:#EEF2F6;margin:6px 0 8px}
+.tl p{font-size:15.5px;color:#C8D0DA}
+@media (max-width:860px){
+ .tl{grid-template-columns:minmax(0,1fr)}
+ .tl::before{left:11px;right:auto;top:0;bottom:0;width:2px;height:auto}
+ .tl li{padding:0 0 30px 48px}
+ .tl li:last-child{padding-bottom:0}
+}
+
+.rv .panel.on{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:stretch}
+@media(max-width:980px){.rv .panel.on{grid-template-columns:minmax(0,1fr)}}
+.rv .blk,.rv .blk.koers{border:1px solid var(--line);border-top:3px solid var(--ink);border-radius:10px;background:var(--raise);padding:16px 18px 18px}
+.rv .blk.koers{border-top-color:var(--accent);background:var(--wash)}
+.rv .chap li{grid-template-columns:12px minmax(0,1fr);gap:2px 10px}.rv .chap span{grid-column:2;font-size:14px}
+.rv .chap li{padding:8px 0}
+.rv .koers .big2 small{display:block;margin:4px 0 0;font-size:14px}
+.rv .koers .bi .was{grid-column:1/-1;grid-row:auto;justify-self:start}
+.rv .koers .bi b{font-size:15px}
+
+.revmore{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;margin-top:22px}
+
+.bul{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:8px}.bul li{position:relative;padding-left:24px;color:var(--ink);font-size:16.5px}.bul li::before{content:"→";position:absolute;left:0;color:var(--accent);font-weight:700}
+</style>
+<header><div class="wrap"><a class="brand" href="#">Agent<span>Push</span></a><nav class="main"><a href="#plan">Wat je krijgt</a><a href="#review">De review</a><a href="#werkwijze">Zo werkt het</a><a href="#bob">Over AgentPush</a><a href="meer.html">Meer weten</a><button class="tool" id="theme" type="button" aria-label="Licht of donker" title="Licht of donker">☾</button><a class="btn" href="#gesprek">Plan een gesprek</a></nav></div></header>
+<main>
+<section class="hero3"><div class="wrap"><div><div class="label">Voor het MKB</div><h1 style="margin-top:18px">Je concurrent versnelt met AI. Wat doe jij?</h1>
+<p class="lede">Eerst een businessplan voor de komende jaren. Daarna een maandelijkse review op je strategie en op hoe je er echt voor staat. AgentPush richt het in en geeft het inzicht, jij maakt de keuzes.</p>
+<div class="cta"><a class="btn" href="#gesprek">Plan een gesprek</a><a class="link" href="#nu">Waarom nu</a></div></div><div><div class="viewer" id="viewer" data-sel="c"><div class="vh"><div><b>Businessplan 2027–2029</b><span class="label">voorbeeld, fictief installatiebedrijf</span></div></div>
+<div class="tabs" role="tablist"><button role="tab" aria-selected="true" aria-controls="s1" id="t1">Strategie</button><button role="tab" aria-selected="false" aria-controls="s2" id="t2">Positie en prijs</button><button role="tab" aria-selected="false" aria-controls="s3" id="t3">Organisatie</button><button role="tab" aria-selected="false" aria-controls="s4" id="t4">Financieel</button></div>
+<div class="stage"><div class="sw" role="group" aria-label="Kies een strategie"><button type="button" class="sa" data-k="a" aria-pressed="false">A</button><button type="button" class="sb" data-k="b" aria-pressed="false">B</button><button type="button" class="sc" data-k="c" aria-pressed="true">C</button></div><div class="slide on" role="tabpanel" id="s1"><h3>Drie strategieën. Eén gekozen.</h3><div class="flips"><button type="button" class="ft sa" data-k="a" aria-pressed="false"><span class="in"><span class="face front"><span class="ltr">A</span><span class="tt">Marge optimaliseren</span><span class="hint">Tik voor details ↻</span></span><span class="face back"><span class="ds">Prijs, korting en inkoop aanpakken in de huidige markt.</span><span class="pbk"><b>Past bij</b> zekerheid op korte termijn.</span><span class="eb">EBITDA</span><span class="nums"><i>8%<small>2028</small></i><i>6%<small>2029</small></i></span></span></span></button><button type="button" class="ft sb" data-k="b" aria-pressed="false"><span class="in"><span class="face front"><span class="ltr">B</span><span class="tt">Verbreden met service</span><span class="hint">Tik voor details ↻</span></span><span class="face back"><span class="ds">Warmtepomp, onderhoud en monitoring in één maandprijs.</span><span class="pbk"><b>Past bij</b> groei zonder nieuwe markt.</span><span class="eb">EBITDA</span><span class="nums"><i>9%<small>2028</small></i><i>9%<small>2029</small></i></span></span></span></button><button type="button" class="ft sc pick" data-k="c" aria-pressed="false"><span class="in"><span class="face front"><span class="ltr">C</span><span class="tt">Nieuwe markt: datacenters</span><span class="gk">gekozen</span><span class="hint">Tik voor details ↻</span></span><span class="face back"><span class="ds">Energie en batterijen voor datacenters. Die markt groeit nu.</span><span class="pbk"><b>Past bij</b> nu investeren, later renderen.</span><span class="eb">EBITDA</span><span class="nums"><i>3%<small>2028</small></i><i>14%<small>2029</small></i></span></span></span></button></div></div><div class="slide" role="tabpanel" id="s2"><h3>Je positie in de markt, nu en in 2029</h3><svg class="chart map" viewBox="0 0 600 256" role="img" aria-label="Positioneringskaart: prijsniveau tegen dienstverlening. Jouw bedrijf nu, en waar strategie A, B en C je in 2029 brengen, met de concurrenten in die markt"><path class="gr" d="M153.2 14V220"/><path class="gr" d="M371.6 14V220"/><path class="gr" d="M480.8 14V220"/><path class="gr" d="M44 65.5H590"/><path class="gr" d="M44 168.5H590"/><path class="mid" d="M317 14V220M44 117H590"/><path class="ax" d="M44 14V220H590"/><text class="m" x="44" y="244">goedkoop</text><text class="m" x="317" y="244" text-anchor="middle">prijsniveau</text><text class="m" x="590" y="244" text-anchor="end">duur</text><text class="m" transform="rotate(-90 16 14)" x="16" y="14" text-anchor="end">dienstverlening →</text><g class="mkt cur"><text class="mt" x="56" y="30">markt: installatie</text><circle class="dot" cx="110" cy="190" r="7"/><text x="122" y="195">Installatie Direct</text><circle class="dot" cx="470" cy="196" r="7"/><text x="470" y="218" text-anchor="middle">Klimaat Totaal</text><circle class="dot" cx="440" cy="150" r="7"/><text x="440" y="136" text-anchor="middle">ComfortGroep</text><circle class="dot" cx="500" cy="62" r="7"/><text x="500" y="48" text-anchor="middle">Bakker Warmte</text><circle class="dot" cx="120" cy="62" r="7"/><text x="132" y="67">De Vries Installatie</text></g><g class="mkt dc"><text class="mt" x="56" y="30">markt: energie voor datacenters</text><circle class="dot" cx="495" cy="70" r="7"/><text x="495" y="56" text-anchor="middle">GridLine Energie</text><circle class="dot" cx="440" cy="150" r="7"/><text x="440" y="136" text-anchor="middle">VoltPartners</text><circle class="dot" cx="520" cy="196" r="7"/><text x="520" y="218" text-anchor="middle">Netbouw Groep</text></g><g class="ka"><path class="arrow sa" d="M239.7 144.0L209.4 155.7"/><polygon class="arrowhead sa" points="201.1,158.9 207.9,151.8 211.0,159.6"/></g><g class="kb"><path class="arrow sb" d="M259.0 133.7L299.2 105.3"/><polygon class="arrowhead sb" points="306.6,100.1 301.6,108.7 296.8,101.8"/></g><g class="kc"><path class="arrow sc" d="M259.7 134.8L381.8 68.9"/><polygon class="arrowhead sc" points="389.7,64.6 383.8,72.6 379.8,65.2"/></g><circle class="me" cx="250" cy="140" r="10"/><text class="strong" x="250" y="168" text-anchor="middle">Nu</text><g class="ka"><circle class="sdot sa" cx="188" cy="164" r="12"/><text class="ltrs sa" x="188" y="169" text-anchor="middle">A</text></g><g class="kb"><circle class="sdot sb" cx="318" cy="92" r="12"/><text class="ltrs sb" x="318" y="97" text-anchor="middle">B</text></g><g class="kc"><circle class="sdot sc" cx="402" cy="58" r="12"/><text class="ltrs sc" x="402" y="63" text-anchor="middle">C</text></g></svg><p class="sn"><span class="ka"><em>prijs −3%</em> Iets scherper, iets minder service. Ketens met AI-planning drukken de prijs.</span><span class="kb"><em>prijs +4%</em> Meer service in één maandprijs. In 2028 bieden twee concurrenten hetzelfde.</span><span class="kc"><em>prijs +8%</em> Andere markt, andere spelers, 25–30% groei per jaar. Wie in 2027 start, is er vóór de grote partijen.</span></p></div><div class="slide" role="tabpanel" id="s3"><h3>De organisatie eind 2028</h3><table class="org-t"><thead><tr><th></th><th>Nu</th><th class="ta ka">A<small>afschalen</small></th><th class="tb kb">B<small>meer monteurs</small></th><th class="tc kc">C<small>nieuw team</small></th></tr></thead><tbody><tr><td>Monteurs installatie</td><td class="nu">38</td><td class="dn ka">−2</td><td class="up kb">+6</td><td class="up kc">+3</td></tr><tr><td>Monteurs datacenters</td><td class="nu">0</td><td class="z ka">–</td><td class="z kb">–</td><td class="up kc">+6</td></tr><tr><td>Verkoop</td><td class="nu">4</td><td class="z ka">–</td><td class="up kb">+2</td><td class="up kc">+3</td></tr><tr><td>Planning en office</td><td class="nu">15</td><td class="dn ka">−4</td><td class="dn kb">−4</td><td class="dn kc">−2</td></tr><tr><td>Management</td><td class="nu">3</td><td class="z ka">–</td><td class="up kb">+1</td><td class="up kc">+1</td></tr><tr class="tot"><td>Totaal fte</td><td class="nu">60</td><td class="ka">54</td><td class="kb">65</td><td class="kc">71</td></tr></tbody></table><p class="sn"><span class="ka">Niemand erbij. AI neemt planning en administratie over.</span><span class="kb">Zes monteurs en twee verkopers erbij. Planning gaat naar AI.</span><span class="kc">Al in 2027: een datacenter-team van zes en een eigen verkoper.</span></p></div><div class="slide" role="tabpanel" id="s4"><h3>EBITDA per strategie, in % van de omzet</h3><svg class="chart fin" viewBox="0 0 600 200" role="img" aria-label="EBITDA in procenten van de omzet, 2026 tot 2029, voor strategie A, B en C. C zakt in 2027 en passeert B in 2028."><path class="gr" d="M52 147.0H508"/><text class="m" x="42" y="151.0" text-anchor="end">4%</text><path class="gr" d="M52 97.0H508"/><text class="m" x="42" y="101.0" text-anchor="end">8%</text><path class="gr" d="M52 47.0H508"/><text class="m" x="42" y="51.0" text-anchor="end">12%</text><text class="m" x="52" y="194" text-anchor="middle">2026</text><text class="m" x="202" y="194" text-anchor="middle">2027</text><text class="m" x="352" y="194" text-anchor="middle">2028</text><text class="m" x="502" y="194" text-anchor="middle">2029</text><g class="ka"><polyline class="ln a" points="52,109.5 202,99.5 352,97.0 502,122.0"/><circle class="ed a" cx="502" cy="122.0" r="5"/><text class="end a" x="514" y="126.0">A · 6%</text></g><g class="kb"><polyline class="ln b" points="52,109.5 202,97.0 352,84.5 502,84.5"/><circle class="ed b" cx="502" cy="84.5" r="5"/><text class="end b" x="514" y="88.5">B · 9%</text></g><g class="kc"><polyline class="ln c" points="52,109.5 202,115.8 352,159.5 502,22.0"/><circle class="ed c" cx="502" cy="22.0" r="5"/><text class="end c" x="514" y="26.0">C · 14%</text></g><g class="kc"><circle class="ring" cx="433.8" cy="84.5" r="9"/><text class="m" x="419.8" y="70.5" text-anchor="end">C voorbij B</text></g></svg><p class="sn"><span class="ka">Houdt de marge in 2028 vast, daarna drukt de markt de prijs. Weinig investering nodig.</span><span class="kb">Groeit gestaag, maar concurrenten gaan hetzelfde bieden. Een gemiddelde investering.</span><span class="kc">Kost in 2027 en 2028 marge en loopt in 2029 voorbij B. De grootste investering, en later instappen kost meer.</span></p></div></div><div class="vfoot"><span>Fictief voorbeeld.</span><a class="link" href="plan.html">Bekijk het voorbeeldplan, 10 pagina&#39;s →</a></div><div class="prog" id="prog"><i></i></div></div></div></div></section>
+<section id="nu"><div class="wrap">
+  <div class="label">Waarom nu</div>
+  <h2 style="margin-top:14px;max-width:22ch">AI verandert je markt, of je nu meedoet of niet.</h2>
+  <p class="nusub">Van oorzaak naar actie. Draai de kaarten om.</p>
+  <div class="tiles"><button class="tile" type="button" aria-pressed="false"><span class="in"><span class="face front"><span class="n">01 · Oorzaak</span><b>Je concurrenten zetten AI in om slimmer te werken.</b><span class="hint">Draai om ↻</span></span><span class="face back"><span class="n">01 · Oorzaak</span><span class="bt">Ze plannen slimmer, schrappen dubbel werk en overhead en kopen scherper in. Hun kosten dalen, hun marge stijgt.</span><span class="who2"><span class="does">De review vindt overhead en lekkage in processen, contracten en facturen.</span></span></span></span></button><button class="tile" type="button" aria-pressed="false"><span class="in"><span class="face front"><span class="n">02 · Gevolg</span><b>Je klanten krijgen een beter aanbod. Van een ander.</b><span class="hint">Draai om ↻</span></span><span class="face back"><span class="n">02 · Gevolg</span><span class="bt">Lagere kosten geven ruimte voor een lagere prijs en een ander aanbod: een abonnement in plaats van een losse klus, een offerte binnen een dag. Je klanten gaan vergelijken.</span><span class="who2"><span class="does">Het plan laat zien welke klanten je houdt, en met welk aanbod en welke prijs.</span></span></span></span></button><button class="tile" type="button" aria-pressed="false"><span class="in"><span class="face front"><span class="n">03 · Gevolg</span><b>Wie stilstaat, mist kansen, verliest klanten en verlaagt de waarde van zijn bedrijf.</b><span class="hint">Draai om ↻</span></span><span class="face back"><span class="n">03 · Gevolg</span><span class="bt">Concurrenten gaan andere diensten en producten aanbieden. De vraag is dan niet meer wat je kost, maar of je bedrijf nog relevant is.</span><span class="who2"><span class="does">Daarom begint het plan bij je strategie: welke markt, welk aanbod.</span></span></span></span></button><button class="tile act" type="button" aria-pressed="false"><span class="in"><span class="face front"><span class="n">04 · Actie</span><b>Kies je strategie en breng hem naar uitvoering.</b><span class="hint">Draai om ↻</span></span><span class="face back"><span class="n">04 · Actie</span><span class="bt">Welke markt, welk aanbod, welke prijs, welke organisatie. Per strategie zie je wat hij oplevert en wat wachten kost. De review houdt daarna bij of de uitvoering op koers ligt.</span><span class="who2"><span class="does">Het plan zet de strategieën voor je naast elkaar. Jij kiest.</span></span></span></span></button></div>
+</div></section>
+<section id="plan"><div class="wrap"><div class="label">Wat je krijgt</div><h2 style="margin-top:14px;max-width:24ch">Een plan voor de komende jaren, en een maandelijkse review die je koers bewaakt.</h2><div class="gives"><div class="g0"><span class="when">Stap 1 · week 1 · eenmalig, daarna van jou</span><h3>De inrichting</h3><p>Hoe je bedrijf AI inzet om meer business te doen, in de AI-tool die jij kiest.</p><ul><li>Je gegevens veilig op één plek, bij jou</li><li>Een datalake met toegangsrechten die kloppen</li><li>De scripts en prompts waarmee AgentPush je bedrijf doorlicht, om zelf verder te gaan</li></ul></div><div class="g1"><span class="when">Stap 2 · week 2–6 · eenmalig</span><h3>Het businessplan voor drie jaar</h3><p>Waar je bedrijf naartoe gaat, in cijfers en in mensen.</p><ul><li>Positionering en prijs</li><li>Financiële outlook voor drie jaar, per strategie</li><li>De organisatie die erbij past</li></ul><a class="link" href="plan.html">Bekijk het voorbeeldplan</a></div><div class="g2"><span class="when">Stap 3 · daarna · elke maand</span><h3>De business review</h3><p>Het plan blijft leven. AgentPush draait de review op je nieuwe gegevens en zegt waar je staat.</p><ul><li>Wat verschoof en wat dat betekent</li><li>Waar je op koers ligt en waar niet</li><li>Waar je nu kunt optimaliseren</li></ul><a class="link" href="review.html">Bekijk de voorbeeldreview</a></div></div></div></section>
+<section id="review"><div class="wrap rv"><div class="label">De business review</div><h2 style="margin-top:14px;max-width:26ch">De maandelijkse review laat zien of je op koers ligt en waar je kunt versnellen.</h2><p class="small">Elke review heeft drie delen: de vaste hoofdstukken, wat je nu kunt doen, en of je strategie op koers ligt.</p><div class="tabs" role="tablist" style="margin-top:26px"><button role="tab" aria-selected="true" aria-controls="r0" id="rt0">September review</button><button role="tab" aria-selected="false" aria-controls="r1" id="rt1">Oktober review</button></div><div class="panel on" id="r0" role="tabpanel"><div class="blk"><div class="bh"><span>01</span>De standaard review</div><p class="bs">Elke maand dezelfde hoofdstukken, in dezelfde opbouw als je <a class="link" href="#viewer">businessplan</a>.</p><ul class="chap"><li><i class="dot a" aria-hidden="true"></i><b>Financieel</b><span>Omzet op plan, EBITDA 6,1% (plan 6,5%)</span></li><li><i class="dot g" aria-hidden="true"></i><b>Klanten, verkoop en website</b><span>Orderintake 8% hoger, website-aanvragen 12% hoger</span></li><li><i class="dot a" aria-hidden="true"></i><b>Markt en prijs</b><span>ComfortGroep 5% goedkoper op onderhoud</span></li><li><i class="dot a" aria-hidden="true"></i><b>Organisatie</b><span>60 fte, twee monteurs vertrokken</span></li></ul></div><div class="blk"><div class="bh"><span>02</span>Het hier en nu</div><h4>Wat verschoof sinds de vorige review</h4><ul class="ul2"><li>ComfortGroep verlaagt zijn onderhoudsprijs met 5%.</li><li>De factuurwaarde van product A neemt sneller af dan verwacht.</li><li>De inkoopprijzen van leverancier A stijgen.</li></ul><h4>Wat je nu kunt doen</h4><ul class="ul2 act"><li>Onderhoudsklanten bellen voordat ComfortGroep dat doet.</li><li>Leverancier A heronderhandelen vóór de verlenging.</li></ul></div><div class="blk koers"><div class="bh"><span>03</span>De strategische koers</div><div class="big2">9 van 14<small>initiatieven op koers</small></div><div class="sbar" role="img" aria-label="9 op koers, 3 aandacht, 2 achter"><i class="g" style="flex:9"></i><i class="a" style="flex:3"></i><i class="r" style="flex:2"></i></div><div class="sl"><span>9 op koers</span><span>3 aandacht</span><span>2 achter</span></div><div class="board short"><div class="bi"><div><b>Operationeel manager werven</b><span class="own">Directie</span></div><span class="st a">Aandacht</span><p>Profiel klaar, nog geen kandidaten.</p></div><div class="bi"><div><b>Prijsstap op onderhoud</b><span class="own">Verkoop</span></div><span class="st g">Op koers</span><p>Doorgevoerd bij 18 klanten.</p></div><div class="bi"><div><b>Eén planningssysteem</b><span class="own">Operatie</span></div><span class="st r">Achter</span><p>Twee systemen draaien nog naast elkaar.</p></div><div class="bi more"><div><b>Eerste datacentercontract</b><span class="own">Verkoop</span></div><span class="st g">Op koers</span><p>Drie offertes uit, één gewonnen.</p></div></div><button class="showall" type="button" aria-expanded="false" data-n="1">Toon nog 1 initiatief <span aria-hidden="true">↓</span></button></div></div><div class="panel" id="r1" role="tabpanel"><div class="blk"><div class="bh"><span>01</span>De standaard review</div><p class="bs">Elke maand dezelfde hoofdstukken, in dezelfde opbouw als je <a class="link" href="#viewer">businessplan</a>.</p><ul class="chap"><li><i class="dot g" aria-hidden="true"></i><b>Financieel</b><span>EBITDA 6,6% (plan 6,5%)</span></li><li><i class="dot g" aria-hidden="true"></i><b>Klanten, verkoop en website</b><span>Twee datacentercontracten getekend, conversie website 1,6%</span></li><li><i class="dot a" aria-hidden="true"></i><b>Markt en prijs</b><span>Klimaat Totaal biedt nu ook een onderhoudspakket</span></li><li><i class="dot g" aria-hidden="true"></i><b>Organisatie</b><span>Operationeel manager gestart</span></li></ul></div><div class="blk"><div class="bh"><span>02</span>Het hier en nu</div><h4>Wat verschoof sinds de vorige review</h4><ul class="ul2"><li>Het nieuwe contract met leverancier A dempt de prijsstijging.</li><li>Klimaat Totaal biedt nu ook een onderhoudspakket.</li><li>Datacenters vragen sneller dan het plan verwachtte.</li></ul><h4>Wat je nu kunt doen</h4><ul class="ul2 act"><li>Het onderhoudspakket aanscherpen voordat Klimaat Totaal klanten wint.</li><li>De oude planning uitzetten.</li></ul></div><div class="blk koers"><div class="bh"><span>03</span>De strategische koers</div><div class="big2">11 van 14<small>initiatieven op koers</small></div><div class="sbar" role="img" aria-label="11 op koers, 2 aandacht, 1 achter"><i class="g" style="flex:11"></i><i class="a" style="flex:2"></i><i class="r" style="flex:1"></i></div><div class="sl"><span>11 op koers</span><span>2 aandacht</span><span>1 achter</span></div><div class="board short"><div class="bi"><div><b>Operationeel manager werven</b><span class="own">Directie</span></div><span class="st g">Op koers</span><p>Aangesteld en gestart op 1 november.</p><span class="was">was: aandacht</span></div><div class="bi"><div><b>Prijsstap op onderhoud</b><span class="own">Verkoop</span></div><span class="st g">Op koers</span><p>Doorgevoerd bij 41 klanten.</p></div><div class="bi"><div><b>Eén planningssysteem</b><span class="own">Operatie</span></div><span class="st a">Aandacht</span><p>Eén systeem is live, de oude planning loopt nog uit.</p><span class="was">was: achter</span></div><div class="bi more"><div><b>Eerste datacentercontract</b><span class="own">Verkoop</span></div><span class="st g">Op koers</span><p>Twee contracten getekend, een derde in onderhandeling.</p></div><div class="bi more"><div><b>Juridisch advies nieuwe organisatiestructuur</b><span class="own">Directie</span></div><span class="st g">Op koers</span><p>Advies binnen, de nieuwe structuur kan per januari in.</p></div></div><button class="showall" type="button" aria-expanded="false" data-n="2">Toon nog 2 initiatieven <span aria-hidden="true">↓</span></button></div></div><div class="revmore"><a class="btn" href="review.html">Bekijk de voorbeeldreview, 10 pagina's</a><p class="note3" style="margin:0">Voorbeeld, fictief installatiebedrijf met 14 initiatieven; hier een deel ervan. Een review voor een klant is gedetailleerder.</p></div></div></section>
+<section id="inrichting"><div class="wrap"><div class="label">In je eigen AI-tool</div><h2 style="margin-top:14px;max-width:24ch">De AI-tool die je al gebruikt, maar die nu ook je bedrijf begrijpt.</h2><p class="small">Wat erachter staat, richten we samen in: een datalake met je gegevens, veilig bij jou en met rechten die kloppen. Daarop werkt het op twee manieren: jij en je MT stellen zelf vragen, wanneer het uitkomt, en elke maand stelt AgentPush de business review op.</p><div class="hubwrap"><svg class="hubd" viewBox="0 0 900 360" role="img" aria-label="Je systemen en marktgegevens stromen naar een datalake in jouw omgeving. Daar werkt je eigen AI-tool op. Jij en je MT stellen er zelf vragen aan; AgentPush stelt er elke maand de business review uit op."><rect class="src" x="1" y="6" width="150" height="34" rx="4"/><text class="src-t" x="76" y="27.5" text-anchor="middle">Boekhouding</text><rect class="src" x="1" y="54" width="150" height="34" rx="4"/><text class="src-t" x="76" y="75.5" text-anchor="middle">CRM en offertes</text><rect class="src" x="1" y="102" width="150" height="34" rx="4"/><text class="src-t" x="76" y="123.5" text-anchor="middle">Website en analytics</text><rect class="src" x="1" y="150" width="150" height="34" rx="4"/><text class="src-t" x="76" y="171.5" text-anchor="middle">Planning of ERP</text><rect class="src" x="1" y="198" width="150" height="34" rx="4"/><text class="src-t" x="76" y="219.5" text-anchor="middle">Contracten</text><rect class="src" x="1" y="246" width="150" height="34" rx="4"/><text class="src-t" x="76" y="267.5" text-anchor="middle">Bank</text><rect class="src" x="1" y="294" width="150" height="34" rx="4"/><text class="src-t" x="76" y="315.5" text-anchor="middle">Markt en prijzen</text><path class="ln" id="p0" d="M151 23C235 23 235 170 320 170"/><path class="ln" id="p1" d="M151 71C235 71 235 170 320 170"/><path class="ln" id="p2" d="M151 119C235 119 235 170 320 170"/><path class="ln" id="p3" d="M151 167C235 167 235 170 320 170"/><path class="ln" id="p4" d="M151 215C235 215 235 170 320 170"/><path class="ln" id="p5" d="M151 263C235 263 235 170 320 170"/><path class="ln" id="p6" d="M151 311C235 311 235 170 320 170"/><path class="ln" id="ph" d="M470 170H550"/><path class="ln" id="po0" d="M770 85C735 85 735 170 700 170"/><path class="ln" id="po1" d="M770 170C735 170 735 170 700 170"/><path class="ln" id="po2" d="M700 170C735 170 735 255 770 255"/><rect class="core" x="320" y="122" width="150" height="96" rx="6"/><text class="core-t" x="395" y="168" text-anchor="middle">Datalake</text><text class="core-s" x="395" y="192" text-anchor="middle">veilig, bij jou</text><rect class="cl" x="550" y="122" width="150" height="96" rx="6"/><text class="cl-t" x="625" y="164" text-anchor="middle">Je eigen</text><text class="cl-t" x="625" y="185" text-anchor="middle">AI-tool</text><text class="cl-s" x="625" y="206" text-anchor="middle">naar keuze</text><rect class="out" x="770" y="58" width="129" height="54" rx="4"/><text class="out-t" x="834" y="82" text-anchor="middle">Jij</text><text class="out-s" x="834" y="100" text-anchor="middle">vraagt zelf</text><rect class="out" x="770" y="143" width="129" height="54" rx="4"/><text class="out-t" x="834" y="167" text-anchor="middle">Je MT</text><text class="out-s" x="834" y="185" text-anchor="middle">vraagt zelf</text><rect class="out rv" x="770" y="228" width="129" height="54" rx="4"/><text class="out-t" x="834" y="252" text-anchor="middle">Business review</text><text class="out-s" x="834" y="270" text-anchor="middle">door AgentPush</text><circle class="pulse" r="4.5"><animateMotion dur="3.0s" begin="0.0s" repeatCount="indefinite" calcMode="linear"><mpath href="#p0"/></animateMotion></circle><circle class="pulse" r="4.5"><animateMotion dur="3.4s" begin="0.45s" repeatCount="indefinite" calcMode="linear"><mpath href="#p1"/></animateMotion></circle><circle class="pulse" r="4.5"><animateMotion dur="3.8s" begin="0.9s" repeatCount="indefinite" calcMode="linear"><mpath href="#p2"/></animateMotion></circle><circle class="pulse" r="4.5"><animateMotion dur="3.0s" begin="1.35s" repeatCount="indefinite" calcMode="linear"><mpath href="#p3"/></animateMotion></circle><circle class="pulse" r="4.5"><animateMotion dur="3.4s" begin="1.8s" repeatCount="indefinite" calcMode="linear"><mpath href="#p4"/></animateMotion></circle><circle class="pulse" r="4.5"><animateMotion dur="3.8s" begin="0.0s" repeatCount="indefinite" calcMode="linear"><mpath href="#p5"/></animateMotion></circle><circle class="pulse" r="4.5"><animateMotion dur="3.0s" begin="0.45s" repeatCount="indefinite" calcMode="linear"><mpath href="#p6"/></animateMotion></circle><circle class="pulse" r="4.5"><animateMotion dur="3.4s" begin="0.9s" repeatCount="indefinite" calcMode="linear"><mpath href="#ph"/></animateMotion></circle><circle class="pulse" r="4.5"><animateMotion dur="3.8s" begin="1.35s" repeatCount="indefinite" calcMode="linear"><mpath href="#po2"/></animateMotion></circle><circle class="ask" r="5"><animateMotion dur="2.6s" begin="0.0s" repeatCount="indefinite" calcMode="linear"><mpath href="#po0"/></animateMotion></circle><circle class="ask" r="5"><animateMotion dur="2.6s" begin="0.9s" repeatCount="indefinite" calcMode="linear"><mpath href="#po1"/></animateMotion></circle><g class="lg"><circle class="pulse" cx="560" cy="300" r="4.5"/><text x="572" y="305">gegevens</text><circle class="ask" cx="660" cy="300" r="5"/><text x="672" y="305">vragen</text></g></svg><div class="hubm"><div class="chips"><span>Boekhouding</span><span>CRM en offertes</span><span>Website en analytics</span><span>Planning of ERP</span><span>Contracten</span><span>Bank</span><span>Markt en prijzen</span></div><span class="cn" aria-hidden="true"></span><div class="nd core"><b>Datalake</b><span>veilig, in jouw omgeving</span></div><span class="cn" aria-hidden="true"></span><div class="nd cl"><b>Je eigen AI-tool</b><span>naar keuze</span></div><span class="cn" aria-hidden="true"></span><div class="chips"><span>Jij · vraagt zelf</span><span>Je MT · vraagt zelf</span><span class="rv">Business review · door AgentPush, elke maand</span></div></div></div><div class="three"><div><b>Rechten volgen de bron.</b> Wat iemand in je systemen niet mag zien, ziet zijn AI-tool ook niet.</div><div><b>Jij of je CFO beslist.</b> Die wijst aan wie wat mag; je beheerder stelt het in.</div><div><b>Alles blijft van jou.</b> AgentPush is gast in je account. Intrekken kan altijd.</div></div></div></section>
+<section class="flowsec" id="werkwijze"><div class="wrap"><div class="label">Zo werkt het</div><h2 style="margin-top:14px;max-width:26ch">Zes weken tot het plan, daarna de review.</h2><div id="prijs"><div class="phases" aria-hidden="true"><span class="free">Gratis</span><span class="fix">Vaste prijs, vooraf afgesproken</span><span class="mod">Losse module</span></div><ol class="flow"><li class="free"><span class="ph">Gratis</span><span class="wk">Kennismaking</span><b>Een gesprek</b><p>Jij vertelt waar je wilt versnellen.</p><details><summary>Meer</summary><ul><li>Een uur, per Teams of bij jou langs</li><li>Daarna weet je of het past en wat het kost</li></ul></details></li><li class="fix"><span class="ph">Vaste prijs, vooraf afgesproken</span><span class="wk">Week 1</span><b>Inrichten</b><p>Je AI-tool, koppelingen en dataroom.</p><details><summary>Meer</summary><ul><li>Je AI-account op jouw naam</li><li>Koppelingen die alleen lezen</li><li>Binnen vier werkdagen weet je wat er is en wat ontbreekt</li></ul></details></li><li class="fix"><span class="ph">Vaste prijs, vooraf afgesproken</span><span class="wk">Week 2–4</span><b>Doorlichten</b><p>Een eerste analyse van het hier en nu.</p><details><summary>Meer</summary><ul><li>Waar efficiëntie te halen is</li><li>Prijs en propositie naast de markt</li><li>Klanten, contracten en organisatie</li></ul></details></li><li class="fix"><span class="ph">Vaste prijs, vooraf afgesproken</span><span class="wk">Week 5–6</span><b>Kiezen</b><p>Strategische keuzes en het businessplan.</p><details><summary>Meer</summary><ul><li>Strategieën naast elkaar, met wat ze opleveren</li><li>Positie en prijs, financieel en organisatie</li><li>De scripts en prompts, om zelf verder te gaan</li></ul></details></li><li class="mod"><span class="ph">Losse module</span><span class="wk">Daarna</span><b>Business review</b><p>Wanneer jij hem nodig hebt, met een vaste maandelijkse hartslag.</p><details><summary>Meer</summary><ul><li>Altijd nadat de boekhouding de maand heeft afgesloten</li><li>Je draait hem zelf, of AgentPush doet het en bespreekt hem met je</li><li>Los af te nemen, per maand of per review</li></ul></details></li></ol></div><p class="fnote2">Prijzen exclusief btw en exclusief het gebruik van je AI-tool, zoals het abonnement of het tokenverbruik. Dat contract sluit je zelf af; AgentPush helpt je kiezen. <a class="link" href="meer.html#prijs">Meer over prijs</a></p></div></section>
+<section id="bob"><div class="wrap bob"><div class="photo">foto</div><div><div class="label">Over AgentPush</div><h2 style="margin-top:14px">Opgericht door Bob van Bokhoven</h2><div class="role">Commerciële finance, pricing en strategische herpositionering</div><p class="t">Meer dan twintig jaar stuur ik op het punt waar propositie, prijs, verkoop en cijfers samenkomen: bij verschillende grote corporates en in strategische herpositionering in het MKB.</p><p class="t">Het werken met agents begon voor mij in 2025, toen ik een protocol bouwde waarin vier agents samenwerken: Claude, ChatGPT, Gemini en Grok. Die kennis van het opzetten van agents, samen met mijn ervaring als consultant, leidde tot AgentPush.</p><p class="t">Ik richt het in, daarna doet AI het slimme werk. De keuze voor je strategie maak jij; samen spreken we af hoe we de voortgang meten.</p><div class="links"><a class="link" href="https://www.linkedin.com/in/bobvanbokhoven/" target="_blank" rel="noopener">LinkedIn</a><a class="link" href="https://www.z1nprotocol.xyz" target="_blank" rel="noopener">Z1N Protocol</a></div></div></div></section>
+<section class="call" id="gesprek"><div class="wrap"><div><h2>Eén gesprek. Jij vertelt waar je wilt versnellen.</h2><p>Een uur, zonder pitch. Per Teams of bij jou langs.</p></div><div><div class="label" style="color:var(--bandText)">Neem contact op</div><div class="num">bob@agentpush.nl</div><a class="btn" href="mailto:bob@agentpush.nl">Plan een gesprek</a></div></div></section>
+</main>
+<footer><div class="wrap"><span>© 2026 AgentPush · agentpush.nl</span><span><a href="meer.html">Meer weten</a> · Privacy · Verwerkersovereenkomst op aanvraag</span></div></footer>
+<script>(function(){var b=document.getElementById('theme');if(!b)return;var cur=function(){return document.documentElement.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')};var lbl=function(){b.textContent=cur()==='dark'?'☀':'☾'};lbl();b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('ap-theme',n)}catch(e){}lbl()})})();</script>
+<script>(function(){
+var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function tabset(tabs,panels,cls,onShow){tabs.forEach(function(b,i){b.addEventListener('click',function(){show(i,true)})});
+ function show(i,user){tabs.forEach(function(x,j){x.setAttribute('aria-selected',String(i===j))});panels.forEach(function(p,j){p.classList.toggle(cls,i===j)});if(onShow)onShow(i,user)}
+ return show}
+var v=document.getElementById('viewer');
+if(v){var tabs=[].slice.call(v.querySelectorAll('[role=tab]')),sl=[].slice.call(v.querySelectorAll('.slide')),prog=document.getElementById('prog'),cur=0,timer=null,stopped=reduce;
+ var show=tabset(tabs,sl,'on',function(i,user){cur=i;if(user){stopped=true;clearTimeout(timer);prog.classList.remove('run');return}run()});
+ v.addEventListener('pointerdown',function(){stopped=true;clearTimeout(timer);prog.classList.remove('run')});function run(){if(stopped)return;prog.classList.remove('run');void prog.offsetWidth;prog.classList.add('run');clearTimeout(timer);timer=setTimeout(function(){if(!stopped)show((cur+1)%tabs.length,false)},7000)}
+ v.addEventListener('mouseenter',function(){});
+ if(!reduce)run()}
+var mt=[].slice.call(document.querySelectorAll('.rv [role=tab]')),mp=[].slice.call(document.querySelectorAll('.rv .panel'));
+if(mt.length)tabset(mt,mp,'on');
+document.querySelectorAll('.tile').forEach(function(b){b.addEventListener('click',function(){b.setAttribute('aria-pressed',String(b.getAttribute('aria-pressed')!=='true'))})});
+document.querySelectorAll('.pc').forEach(function(b){b.addEventListener('click',function(){var w=b.parentNode;[].forEach.call(w.children,function(x){x.setAttribute('aria-pressed',String(x===b))});w.nextElementSibling.textContent=b.dataset.t})});document.querySelectorAll('.ft').forEach(function(b){b.addEventListener('click',function(){var f=b.classList.toggle('flipped');b.setAttribute('aria-pressed',String(f))})});document.querySelectorAll('.showall').forEach(function(b){b.addEventListener('click',function(){var bd=b.previousElementSibling,open=bd.classList.toggle('short')===false;b.setAttribute('aria-expanded',String(open));b.firstChild.textContent=open?'Toon minder ':'Toon nog '+b.dataset.n+(b.dataset.n=='1'?' initiatief ':' initiatieven '); b.lastChild.textContent=open?'↑':'↓'})});
+var hs=document.querySelector('.hubd');if(hs&&reduce&&hs.pauseAnimations)hs.pauseAnimations();
+})();</script><script>(function(){var v=document.getElementById('viewer');if(!v)return;var bs=[].slice.call(v.querySelectorAll('.sw button')),ts=[].slice.call(v.querySelectorAll('.ft'));
+function sel(k){v.setAttribute('data-sel',k);bs.forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.k===k))});ts.forEach(function(t){t.classList.toggle('on',t.dataset.k===k)})}
+bs.forEach(function(b){b.addEventListener('click',function(){sel(b.dataset.k)})});ts.forEach(function(t){t.addEventListener('click',function(){sel(t.dataset.k)})});sel(v.getAttribute('data-sel')||'c')})();</script>
+</html>
