@@ -14,5 +14,5 @@ User-agent: Slackbot
 Allow: /
 
 User-agent: *
-Disallow: /
+Allow: /
 Sitemap: https://agentpush.nl/sitemap.xml
