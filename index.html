@@ -417,8 +417,12 @@ svg.chart{width:100%;height:auto;display:block;max-width:100%}
 .phases>span{min-width:0}
 .phases span{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;padding:8px 0 10px;border-top:3px solid}
 .phases .free{color:var(--mute);border-color:var(--mute)}.phases .fix{color:var(--accent);border-color:var(--accent)}.phases .mod{color:var(--review);border-color:var(--review)}.phases .run{color:var(--run);border-color:var(--run)}
-.flow{list-style:none;margin:6px 0 0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;align-items:start}
-.flow>li{background:var(--raise);border:1px solid var(--line);border-radius:10px;padding:16px 16px 12px;display:flex;flex-direction:column}
+.flow{list-style:none;margin:6px 0 0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;align-items:stretch}
+.flow>li{background:var(--raise);border:1px solid var(--line);border-radius:10px;padding:16px 16px 12px;display:flex;flex-direction:column;min-width:0}
+@media(min-width:901px){
+ .flow{row-gap:0}
+ .flow>li{display:grid;grid-row:span 4;grid-template-rows:subgrid}
+}
 .flow>li.fix{border-color:color-mix(in srgb,var(--accent) 45%,transparent)}.flow>li.mod{border-color:color-mix(in srgb,var(--review) 55%,transparent)}.flow>li.run{border-color:color-mix(in srgb,var(--run) 55%,transparent)}
 .flow .ph{display:none}
 .flow .wk,.flow .ph{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
