@@ -1,3 +1,8 @@
+# Elke HTML-pagina heeft meta name=robots content=noindex, nofollow tot de livegang.
+# Crawlen blijft toegestaan, zodat die noindex wordt gezien. Niet op Disallow zetten.
+# Bij livegang: noindex in de HTML vervangen door index, follow en de sitemap indienen.
+# De sitemap blijft hier staan zodat die indiening klaar is; noindex voorkomt opname in de index.
+
 User-agent: LinkedInBot
 Allow: /
 
@@ -15,4 +20,5 @@ Allow: /
 
 User-agent: *
 Allow: /
+
 Sitemap: https://agentpush.nl/sitemap.xml
